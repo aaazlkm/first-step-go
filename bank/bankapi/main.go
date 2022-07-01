@@ -79,6 +79,10 @@ func (bankController BankController) deposit(w http.ResponseWriter, r *http.Requ
 		fmt.Fprintf(w, "account is not found")
 	}
 
-	account.Deposit(amount)
+	if err := account.Deposit(amount); err != nil {
+		fmt.Fprintf(w, "cannot deposit")
+		return
+	}
+
 	fmt.Fprint(w, account.Statement())
 }
