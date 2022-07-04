@@ -40,3 +40,23 @@ func (a *Account) Withdraw(money float64) error {
 func (a *Account) Statement() string {
 	return fmt.Sprintf("%+v - %+v - %+v", a.Number, a.Customer.Name, a.Balance)
 }
+
+func (a *Account) Send(money float64, to *Account) error {
+	if money <= 0 {
+		return errors.New("the amount to withdraw should be greater than zero")
+	}
+
+	if a.Balance-money < 0 {
+		return errors.New("the amount to withdraw is greater than the balance")
+	}
+
+	if err := a.Withdraw(money); err != nil {
+		return err
+	}
+
+	if err := to.Deposit(money); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -99,3 +99,39 @@ func TestStatements(t *testing.T) {
 		t.Error("statement is not correct")
 	}
 }
+
+func TestSend(t *testing.T) {
+	account1 := Account{
+		Customer: Customer{
+			Name:    "test",
+			Address: "Los Angeles, California",
+			Phone:   "(213) 555 0147",
+		},
+		Number:  1001,
+		Balance: 0,
+	}
+	account2 := Account{
+		Customer: Customer{
+			Name:    "test",
+			Address: "Los Angeles, California",
+			Phone:   "(213) 555 0147",
+		},
+		Number:  1001,
+		Balance: 0,
+	}
+	if err := account1.Deposit(10); err != nil {
+		t.Error(err)
+	}
+
+	if err := account1.Send(10, &account2); err != nil {
+		t.Error(err)
+	}
+
+	if account1.Balance != 0 {
+		t.Error("balance is not being updated after a send")
+	}
+
+	if account2.Balance != 10 {
+		t.Error("balance is not being updated after a send")
+	}
+}

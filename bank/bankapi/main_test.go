@@ -40,6 +40,41 @@ func TestDeposit(t *testing.T) {
 	}
 }
 
+func TestWithDraw(t *testing.T) {
+	baseController := testBankController()
+
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("Get", "/withdraw", nil)
+	query := request.URL.Query()
+	query.Add("accountId", "1003")
+	query.Add("amount", "100")
+	request.URL.RawQuery = query.Encode()
+
+	baseController.withdraw(response, request)
+
+	if response.Body.String() != "1003 - test3 - 0" {
+		t.Error("withdraw is not working")
+	}
+}
+
+func TestSend(t *testing.T) {
+	baseController := testBankController()
+
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("Get", "/send", nil)
+	query := request.URL.Query()
+	query.Add("accountId", "1003")
+	query.Add("amount", "100")
+	query.Add("toAccountId", "1002")
+	request.URL.RawQuery = query.Encode()
+
+	baseController.send(response, request)
+
+	if response.Body.String() != "1003 - test3 - 0" {
+		t.Error("send is not working")
+	}
+}
+
 func testBankController() BankController {
 	return BankController{
 		map[int64]bankcore.Account{
@@ -68,7 +103,7 @@ func testBankController() BankController {
 					Phone:   "(213) 555 0147",
 				},
 				Number:  1003,
-				Balance: 0,
+				Balance: 100,
 			},
 		},
 	}
